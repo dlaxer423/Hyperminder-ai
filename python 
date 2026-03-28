@@ -1,0 +1,42 @@
+import streamlit as st
+import requests
+
+st.set_page_config(page_title="AI Kod Yazıcı", page_icon="🤖")
+
+st.title("🤖 AI Kod Yazıcı")
+
+# API key gir (ücretsiz)
+api_key = st.text_input("Kimi API Key", type="password", 
+    help="platform.moonshot.cn'den al")
+
+prompt = st.text_area("Ne kodu yazalım?", height=100,
+    placeholder="Python ile hesap makinesi yaz")
+
+if st.button("🚀 Kod Üret") and api_key and prompt:
+    with st.spinner("Yazıyor..."):
+        try:
+            response = requests.post(
+                "https://api.moonshot.cn/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "kimi-k2-5",
+                    "messages": [
+                        {"role": "system", "content": "Sen kod yazıcısısın. Sadece kod ve kısa açıklama yaz."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    "temperature": 0.2
+                },
+                timeout=30
+            )
+            
+            code = response.json()['choices'][0]['message']['content']
+            st.code(code, language='python')
+            
+        except Exception as e:
+            st.error(f"Hata: {e}")
+
+st.markdown("---")
+st.caption("Kimi API ile çalışır | Ücretsiz")
