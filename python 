@@ -3,7 +3,86 @@ import requests
 
 st.set_page_config(page_title="AI Kod Yazıcı", page_icon="🤖")
 
+st.title("🤖 AI import streamlit as st
+import requests
+
+st.set_page_config(page_title="AI Kod Yazıcı", page_icon="🤖")
+
 st.title("🤖 AI Kod Yazıcı")
+
+# API key - boşlukları temizle ve kontrol et
+api_key = st.text_input("API Key", type="password").strip()
+
+prompt = st.text_area("Ne kodu yazalım?", height=100)
+
+# Buton ve kontroller
+if st.button("🚀 Kod Üret"):
+    if not api_key:
+        st.error("❌ API key gir!")
+        st.stop()
+    
+    if not prompt or len(prompt.strip()) < 3:
+        st.error("❌ Prompt çok kısa!")
+        st.stop()
+    
+    with st.spinner("Yazıyor..."):
+        try:
+            response = requests.post(
+                "https://api.moonshot.cn/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "kimi-k2-5",
+                    "messages": [
+                        {"role": "system", "content": "Sen kod yazıcısısın. Sadece çalışan kod ve kısa açıklama yaz."},
+                        {"role": "user", "content": prompt.strip()}
+                    ],
+                    "temperature": 0.2,
+                    "max_tokens": 2000
+                },
+                timeout=30  # Zaman aşımı eklendi
+            )
+            
+            # Önce HTTP hata kontrolü
+            if response.status_code != 200:
+                st.error(f"❌ API Hatası: {response.status_code}")
+                st.code(response.text)
+                st.stop()
+            
+            data = response.json()
+            
+            # choices kontrolü
+            if 'choices' not in data or len(data['choices']) == 0:
+                st.error("❌ API boş yanıt döndü")
+                st.json(data)
+                st.stop()
+            
+            code = data['choices'][0]['message']['content']
+            
+            # Sonuç göster
+            st.success("✅ Kod hazır!")
+            st.code(code, language='python')
+            
+            # İndirme butonu
+            st.download_button(
+                "📥 İndir (.py)",
+                code,
+                file_name="kod.py",
+                mime="text/plain"
+            )
+            
+        except requests.exceptions.Timeout:
+            st.error("⏱️ Zaman aşımı: 30 saniye geçti")
+        except requests.exceptions.ConnectionError:
+            st.error("🔌 Bağlantı hatası: İnternet kontrol et")
+        except KeyError as e:
+            st.error(f"❌ Yanıt yapısı hatalı: {e}")
+            st.json(data if 'data' in locals() else {})
+        except Exception as e:
+            st.error(f"❌ Beklenmeyen hata: {str(e)}")
+ Yazıcı")
 
 # API key gir (ücretsiz)
 api_key = st.text_input("Kimi API Key", type="password", 
