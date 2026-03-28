@@ -14,7 +14,7 @@ import streamlit as st
 import requests
 import os
 
-# ... #!/usr/bin/env python3
+
 # -*- coding: utf-8 -*-
 """
 META-AI KOD YAZICI
