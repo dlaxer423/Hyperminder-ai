@@ -1,4 +1,4 @@
-proje-klasoru/
+ proje-klasoru/
 ├── app.py          ← Ana kod (yukarıdaki)
 └── requirements.txt ← Bu da şart
 import streamlit as st
