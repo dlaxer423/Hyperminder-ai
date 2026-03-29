@@ -122,4 +122,4 @@ if st.button("🚀 Kod Üret") and api_key and prompt:
 
 st.markdown("---")
 st.caption("Kimi API ile çalışır | Ücretsiz")
-     
+      
